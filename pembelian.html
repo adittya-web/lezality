@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezatify</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="lezalitify.ico">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #f8e8ff;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            background: #800080;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            display: inline;
+            padding: 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        section {
+            padding: 50px;
+        }
+        form {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 90%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        input.error {
+            border: 2px solid red;
+            background-color: #ffe6e6;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+        button {
+            background-color: #800080;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #a32ca3;
+            transform: scale(1.05);
+        }
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pembelian.html">Pembelian</a></li>
+        </ul>
+    </nav>
+
+    <section id="pembelian">
+        <h2>Formulir Pembelian</h2>
+        <form id="orderForm">
+            <div class="form-group">
+                <label for="nama">Nama</label>
+                <input type="text" id="nama" placeholder="Masukkan Nama Anda">
+                <p class="error-message" id="error-nama">Nama tidak boleh kosong</p>
+            </div>
+
+            <div class="form-group">
+                <label for="alamat">Alamat</label>
+                <input type="text" id="alamat" placeholder="Masukkan Alamat Lengkap Anda">
+                <p class="error-message" id="error-alamat">Alamat tidak boleh kosong</p>
+            </div>
+
+            <div class="form-group">
+                <label for="jumlah">Jumlah Pesanan</label>
+                <input type="number" id="jumlah" min="1" placeholder="Masukkan Jumlah">
+                <p class="error-message" id="error-jumlah">Jumlah harus lebih dari 0</p>
+            </div>
+
+            <button type="submit">Pesan Sekarang</button>
+        </form>
+        <p id="orderMessage"></p>
+    </section>
+
+    <script>
+        document.getElementById("orderForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let nama = document.getElementById("nama");
+            let alamat = document.getElementById("alamat");
+            let jumlah = document.getElementById("jumlah");
+            let orderMessage = document.getElementById("orderMessage");
+
+            let isValid = true;
+
+            // Validasi nama
+            if (nama.value.trim() === "") {
+                document.getElementById("error-nama").style.display = "block";
+                nama.classList.add("error");
+                isValid = false;
+            } else {
+                document.getElementById("error-nama").style.display = "none";
+                nama.classList.remove("error");
+            }
+
+            // Validasi alamat
+            if (alamat.value.trim() === "") {
+                document.getElementById("error-alamat").style.display = "block";
+                alamat.classList.add("error");
+                isValid = false;
+            } else {
+                document.getElementById("error-alamat").style.display = "none";
+                alamat.classList.remove("error");
+            }
+
+            // Validasi jumlah
+            if (jumlah.value.trim() === "" || jumlah.value <= 0) {
+                document.getElementById("error-jumlah").style.display = "block";
+                jumlah.classList.add("error");
+                isValid = false;
+            } else {
+                document.getElementById("error-jumlah").style.display = "none";
+                jumlah.classList.remove("error");
+            }
+
+            // Jika ada yang tidak valid, hentikan proses
+            if (!isValid) {
+                orderMessage.textContent = "Harap isi semua bidang dengan benar!";
+                orderMessage.className = "error-message";
+                return;
+            }
+
+            // Jika valid, tampilkan pesan sukses dan buka WhatsApp setelah beberapa detik
+            orderMessage.textContent = "✅ Pesanan Anda sedang dalam proses, jangan tinggalkan halaman ini...";
+            orderMessage.className = "success-message";
+
+            setTimeout(() => {
+                let message = `Halo, saya ingin memesan ${jumlah.value} bola-bola ubi ungu.\nNama: ${nama.value}\nAlamat: ${alamat.value}`;
+                let whatsappURL = `https://api.whatsapp.com/send?phone=6283182117492&text=${encodeURIComponent(message)}`;
+                window.open(whatsappURL, '_blank');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
